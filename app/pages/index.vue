@@ -170,11 +170,6 @@
             <Icon v-else icon="carbon:send-alt" class="w-5 h-5" />
           </button>
         </div>
-        <div class="text-center mt-3">
-          <p class="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
-            AI 生成内容可能不准确，请核实重要信息。
-          </p>
-        </div>
       </div>
     </footer>
   </div>
@@ -277,38 +272,6 @@ const fetchStreamFromNuxtServer = async (msgIndex: number) => {
     messageList.value[msgIndex].isStreaming = false
     isGlobalStreaming.value = false
   }
-}
-
-const simulateStreamResponse = async (msgIndex: number) => {
-  // 获取用户刚才的问题
-  const userQuestion = messageList.value[messageList.value.length - 2].content
-
-  const mockResponse = `这里是关于 **${userQuestion}** 的一些热门资讯：
-
-1. **Vue 3.5 发布**：带来了更快的响应式系统和 Props 解构。
-2. **Nuxt 4 展望**：核心团队正在规划下一代架构，更加轻量化。
-3. **AI 驱动开发**：Cursor 和 Copilot 正在改变编码方式。
-
-\`\`\`typescript
-// 这是一个代码示例
-const greeting = "Hello InfoFlow!";
-console.log(greeting);
-\`\`\`
-
-希望这些信息对你有帮助！`
-
-  const chars = mockResponse.split('')
-  let currentText = ''
-
-  for (const char of chars) {
-    await new Promise(resolve => setTimeout(resolve, 30))
-    currentText += char
-    messageList.value[msgIndex].content = currentText
-    scrollToBottom()
-  }
-
-  messageList.value[msgIndex].isStreaming = false
-  isGlobalStreaming.value = false
 }
 
 onMounted(() => {

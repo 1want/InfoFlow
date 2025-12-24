@@ -9,9 +9,6 @@ export default defineEventHandler(async event => {
   const config = useRuntimeConfig()
   const apiKey = config.aliyunApiKey
 
-  // 添加这行日志 (注意：不要打印完整的 Key，只打印前几位，防止泄露)
-  console.log('Current API Key:', apiKey ? apiKey.substring(0, 5) + '...' : 'undefined')
-
   const client = new OpenAI({
     apiKey: apiKey,
     baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1' // 阿里云兼容接口地址
@@ -19,9 +16,10 @@ export default defineEventHandler(async event => {
 
   // 3. 调用模型
   const response = await client.chat.completions.create({
-    model: 'qwen-plus', // 推荐: qwen-plus, qwen-turbo, qwen-max
+    model: 'qwen-plus-2025-12-01', // 推荐: qwen-plus, qwen-turbo, qwen-max
     messages: messages,
-    stream: true // 开启流式输出
+    stream: true, // 开启流式输出
+    enable_search: true
   })
 
   // 4. 将 OpenAI 的流转换为 Web ReadableStream 返回给前端
