@@ -1,75 +1,40 @@
-# Nuxt Minimal Starter
+# InfoFlow - AI 资讯助手 (Demo)
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+> ⚠️ **免责声明 / Disclaimer**
+>
+> 本项目仅供 **个人学习与技术研究** 使用。
+> 项目中涉及的 API 调用（如阿里云百炼、OpenAI 等）仅作为技术验证示例。
+> 请勿将本项目直接用于商业用途，开发者不对因使用本项目产生的任何费用或法律后果负责。
 
-## Setup
+## 📖 项目简介
 
-Make sure to install dependencies:
+InfoFlow 是一个基于 **Nuxt 3** 构建的极简 AI 资讯助手 Demo。它展示了如何利用现代前端技术栈构建一个流式对话应用。
+
+**核心技术栈：**
+
+- **框架**: [Nuxt 3](https://nuxt.com) (Vue 3)
+- **样式**: [Tailwind CSS](https://tailwindcss.com)
+- **图标**: [Iconify](https://iconify.design)
+- **Markdown 渲染**: [markstream-vue](https://github.com/wanti-dev/markstream-vue) (流式渲染组件)
+- **AI 接入**: OpenAI SDK (兼容阿里云百炼 / DeepSeek 等)
+
+## ✅ 环境要求
+
+在运行本项目之前，请确保你的环境满足以下要求：
+
+- **Node.js**: v23.8.0
+- **包管理器**: pnpm 10.26.2
+
+## 🚀 快速开始
+
+### 1. 配置环境变量
+
+在项目根目录.env 文件填入你的 API Key
+
+### 2. 安装依赖
 
 ```bash
-# npm
-npm install
-
-# pnpm
 pnpm install
 
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
