@@ -1,0 +1,1 @@
+export { default } from "file:///Users/wanti/code/InfoFlow/node_modules/.pnpm/@nuxt+vite-builder@4.2.2_magicast@0.5.1_nuxt@4.2.2_@parcel+watcher@2.5.1_@vue+compiler-_94f09e756ce70949ff350e0e0016b7d7/node_modules/@nuxt/vite-builder/dist/runtime/vite-node.mjs"
