@@ -1464,16 +1464,16 @@ _AegiHwersEO6_Os6XdZLcsgrQ09EBfo03V9B9RSkig8
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"151df-I1ruXZgN77+LI+3d8LVKxKpNT4k\"",
-    "mtime": "2025-12-24T07:56:00.556Z",
-    "size": 86495,
+    "etag": "\"15204-VCnaIX+6mumVDFQl3S0VfkQXva4\"",
+    "mtime": "2025-12-24T07:56:09.347Z",
+    "size": 86532,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"524df-rT8miOR9U2rR45kDC9v3CioEJD0\"",
-    "mtime": "2025-12-24T07:56:00.556Z",
-    "size": 337119,
+    "etag": "\"52584-n34xfgledKAR2sq1/osh1yLc2vo\"",
+    "mtime": "2025-12-24T07:56:09.347Z",
+    "size": 337284,
     "path": "index.mjs.map"
   }
 };
@@ -2229,6 +2229,7 @@ const chat_post = defineEventHandler(async (event) => {
   const { messages } = await readBody(event);
   const config = useRuntimeConfig();
   const apiKey = config.aliyunApiKey;
+  console.log("Current API Key:", apiKey ? apiKey.substring(0, 5) + "..." : "undefined");
   const client = new OpenAI({
     apiKey,
     baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"

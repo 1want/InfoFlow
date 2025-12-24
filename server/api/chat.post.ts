@@ -9,6 +9,9 @@ export default defineEventHandler(async event => {
   const config = useRuntimeConfig()
   const apiKey = config.aliyunApiKey
 
+  // 添加这行日志 (注意：不要打印完整的 Key，只打印前几位，防止泄露)
+  console.log('Current API Key:', apiKey ? apiKey.substring(0, 5) + '...' : 'undefined')
+
   const client = new OpenAI({
     apiKey: apiKey,
     baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1' // 阿里云兼容接口地址
