@@ -1,10 +1,11 @@
 import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { tmpdir } from 'node:os';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getResponseStatusText } from 'file:///Users/wanti/code/InfoFlow/node_modules/.pnpm/h3@1.15.4/node_modules/h3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, sendStream, getResponseStatusText } from 'file:///Users/wanti/code/InfoFlow/node_modules/.pnpm/h3@1.15.4/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
 import { escapeHtml } from 'file:///Users/wanti/code/InfoFlow/node_modules/.pnpm/@vue+shared@3.5.26/node_modules/@vue/shared/dist/shared.cjs.js';
+import OpenAI from 'file:///Users/wanti/code/InfoFlow/node_modules/.pnpm/openai@6.15.0_ws@8.18.3/node_modules/openai/index.mjs';
 import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///Users/wanti/code/InfoFlow/node_modules/.pnpm/vue-bundle-renderer@2.2.0/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/wanti/code/InfoFlow/node_modules/.pnpm/ufo@1.6.1/node_modules/ufo/dist/index.mjs';
 import destr, { destr as destr$1 } from 'file:///Users/wanti/code/InfoFlow/node_modules/.pnpm/destr@2.0.5/node_modules/destr/dist/index.mjs';
@@ -647,7 +648,8 @@ const _inlineRuntimeConfig = {
       }
     }
   },
-  "public": {}
+  "public": {},
+  "aliyunApiKey": ""
 };
 const envOptions = {
   prefix: "NITRO_",
@@ -698,9 +700,9 @@ getContext("nitro-app", {
   AsyncLocalStorage: void 0
 });
 
-const config = useRuntimeConfig();
+const config$1 = useRuntimeConfig();
 const _routeRulesMatcher = toRouteMatcher(
-  createRouter({ routes: config.nitro.routeRules })
+  createRouter({ routes: config$1.nitro.routeRules })
 );
 function createRouteRulesHandler(ctx) {
   return eventHandler((event) => {
@@ -1459,7 +1461,22 @@ const plugins = [
 _AegiHwersEO6_Os6XdZLcsgrQ09EBfo03V9B9RSkig8
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"151df-I1ruXZgN77+LI+3d8LVKxKpNT4k\"",
+    "mtime": "2025-12-24T07:56:00.556Z",
+    "size": 86495,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"524df-rT8miOR9U2rR45kDC9v3CioEJD0\"",
+    "mtime": "2025-12-24T07:56:00.556Z",
+    "size": 337119,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -1869,10 +1886,12 @@ async function getIslandContext(event) {
   return ctx;
 }
 
+const _lazy_c_unQs = () => Promise.resolve().then(function () { return chat_post$1; });
 const _lazy_RRfl7t = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
   { route: '', handler: _OXYIJ8, lazy: false, middleware: true, method: undefined },
+  { route: '/api/chat', handler: _lazy_c_unQs, lazy: true, middleware: false, method: "post" },
   { route: '/__nuxt_error', handler: _lazy_RRfl7t, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
   { route: '/**', handler: _lazy_RRfl7t, lazy: true, middleware: false, method: undefined }
@@ -2204,6 +2223,42 @@ const styles = {};
 const styles$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: styles
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const chat_post = defineEventHandler(async (event) => {
+  const { messages } = await readBody(event);
+  const config = useRuntimeConfig();
+  const apiKey = config.aliyunApiKey;
+  const client = new OpenAI({
+    apiKey,
+    baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    // 阿里云兼容接口地址
+  });
+  const response = await client.chat.completions.create({
+    model: "qwen-plus",
+    // 推荐: qwen-plus, qwen-turbo, qwen-max
+    messages,
+    stream: true
+    // 开启流式输出
+  });
+  const stream = new ReadableStream({
+    async start(controller) {
+      var _a, _b;
+      for await (const chunk of response) {
+        const content = ((_b = (_a = chunk.choices[0]) == null ? void 0 : _a.delta) == null ? void 0 : _b.content) || "";
+        if (content) {
+          controller.enqueue(new TextEncoder().encode(content));
+        }
+      }
+      controller.close();
+    }
+  });
+  return sendStream(event, stream);
+});
+
+const chat_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: chat_post
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function renderPayloadResponse(ssrContext) {

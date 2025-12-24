@@ -10,6 +10,8 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
       cdnURL: string,
    },
 
+   aliyunApiKey: string,
+
    nitro: {
       envPrefix: string,
    },
