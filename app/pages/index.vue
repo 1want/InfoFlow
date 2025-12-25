@@ -28,7 +28,13 @@
         </div>
 
         <!-- 消息项 -->
-        <div v-for="(msg, index) in messageList" :key="index" class="message-item" :class="msg.role">
+        <div
+          v-for="(msg, index) in messageList"
+          :key="index"
+          class="message-item"
+          :class="[msg.role, { 'is-streaming': msg.isStreaming }]"
+          v-memo="[msg.content, msg.isStreaming]"
+        >
           <div class="avatar">
             <Icon v-if="msg.role === 'assistant'" icon="carbon:bot" />
             <Icon v-else icon="carbon:user" />
@@ -174,12 +180,13 @@ const startTypewriter = (msgIndex: number) => {
     // 如果队列有内容，进行消费
     if (pendingQueue.value.length > 0) {
       // 动态计算本帧渲染字符数：
-      // 1. 基础速度：1个字符
-      // 2. 加速因子：如果积压太多，按比例增加渲染量，确保不会永远落后
-      // 例如：积压 60 个字，每帧渲染 1 + 1 = 2 个字
-      //      积压 300 个字，每帧渲染 1 + 5 = 6 个字
+      // 1. 基础速度：至少 5 个字符，保证小段文字也能快速出完
+      // 2. 加速因子：每次渲染剩余量的 1/4 (25%)，实现极速追赶
+      //    例如：积压 1000 字 -> 第一帧渲染 250 字 -> 剩 750
+      //         下一帧渲染 187 字 -> ...
+      //    这种算法能带来“一块一块”快速涌现的视觉感，且非常流畅
       const queueLen = pendingQueue.value.length
-      const charsToRender = 1 + Math.floor(queueLen / 30)
+      const charsToRender = Math.max(5, Math.floor(queueLen / 4))
 
       const chunk = pendingQueue.value.slice(0, charsToRender)
       messageList.value[msgIndex].content += chunk
@@ -515,7 +522,7 @@ $primary-color: #10a37f;
       transition: background 0.2s;
 
       &:hover {
-        background-color: darken($primary-color, 5%);
+        background-color: dark($primary-color, 5%);
       }
       &:disabled {
         background-color: #e5e7eb;
