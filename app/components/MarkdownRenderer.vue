@@ -6,7 +6,6 @@
 import { computed } from 'vue'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
-// 1. 切换回暗色主题
 import 'highlight.js/styles/atom-one-dark.css'
 
 const props = defineProps<{
@@ -27,10 +26,7 @@ const md = new MarkdownIt({
       highlightedCode = md.utils.escapeHtml(str)
     }
 
-    // 2. 移除复制按钮，只保留简单的 wrapper
-    return `<div class="code-block-wrapper">
-              <pre class="hljs language-${lang}"><code>${highlightedCode}</code></pre>
-            </div>`
+    return `<div class="code-block-wrapper"><pre class="hljs language-${lang}"><code>${highlightedCode}</code></pre></div>`
   }
 })
 
@@ -51,12 +47,12 @@ const renderedContent = computed(() => {
 </script>
 
 <style lang="scss">
-/* Markdown 基础样式 */
 .markdown-body {
   font-size: 15px;
   line-height: 1.6;
   color: #24292f;
   word-wrap: break-word;
+  overflow-wrap: break-word;
 
   p {
     margin-bottom: 1em;
@@ -103,9 +99,7 @@ const renderedContent = computed(() => {
     font-size: 14px;
     border: 1px solid #ebeef5;
     border-radius: 4px;
-    overflow: hidden;
-    display: block;
-    overflow-x: auto;
+    table-layout: fixed;
   }
   thead {
     color: #909399;
@@ -113,14 +107,16 @@ const renderedContent = computed(() => {
   }
   th,
   td {
-    padding: 12px 15px;
+    padding: 8px 10px;
     border-bottom: 1px solid #ebeef5;
     text-align: left;
-    min-width: 100px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
   }
   th {
     background-color: #f5f7fa;
-    white-space: nowrap;
+    white-space: normal;
   }
   tr:hover td {
     background-color: #f5f7fa;
@@ -146,7 +142,8 @@ const renderedContent = computed(() => {
     border-radius: 0 !important;
     font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
     font-size: 0.9em;
-
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
     code {
       background-color: transparent;
       padding: 0;

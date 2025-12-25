@@ -179,7 +179,7 @@ const startTypewriter = (msgIndex: number) => {
       // 例如：积压 60 个字，每帧渲染 1 + 1 = 2 个字
       //      积压 300 个字，每帧渲染 1 + 5 = 6 个字
       const queueLen = pendingQueue.value.length
-      const charsToRender = 1 + Math.floor(queueLen / 60)
+      const charsToRender = 1 + Math.floor(queueLen / 30)
 
       const chunk = pendingQueue.value.slice(0, charsToRender)
       messageList.value[msgIndex].content += chunk

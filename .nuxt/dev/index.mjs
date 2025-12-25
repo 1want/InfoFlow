@@ -1347,23 +1347,6 @@ async function errorHandler(error, event) {
   // H3 will handle fallback
 }
 
-const script = `
-if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
-  Object.defineProperty(window, '__NUXT_DEVTOOLS_TIME_METRIC__', {
-    value: {},
-    enumerable: false,
-    configurable: true,
-  })
-}
-window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
-`;
-
-const _G7N03kx9yCrB9P49JpH9dntjAiaMRLhW4u9Jrb7O1_s = (function(nitro) {
-  nitro.hooks.hook("render:html", (htmlContext) => {
-    htmlContext.head.push(`<script>${script}<\/script>`);
-  });
-});
-
 const rootDir = "/Users/wanti/code/InfoFlow";
 
 const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[],"style":[],"script":[],"noscript":[]};
@@ -1457,8 +1440,7 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _G7N03kx9yCrB9P49JpH9dntjAiaMRLhW4u9Jrb7O1_s,
-__BzHTas3k4j4wnh6gV4r2BzgDni6Wa6Z0uXTVqqk0
+  __BzHTas3k4j4wnh6gV4r2BzgDni6Wa6Z0uXTVqqk0
 ];
 
 const assets = {};
