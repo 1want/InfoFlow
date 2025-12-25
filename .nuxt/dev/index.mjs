@@ -2225,6 +2225,7 @@ const chat_post = defineEventHandler(async (event) => {
     messages,
     stream: true,
     // 开启流式输出
+    // @ts-ignore 阿里云特定参数：开启联网搜索以获取最新信息
     enable_search: true
   });
   const stream = new ReadableStream({

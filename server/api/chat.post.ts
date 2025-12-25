@@ -19,6 +19,7 @@ export default defineEventHandler(async event => {
     model: 'qwen-plus-2025-12-01', // 推荐: qwen-plus, qwen-turbo, qwen-max
     messages: messages,
     stream: true, // 开启流式输出
+    // @ts-ignore 阿里云特定参数：开启联网搜索以获取最新信息
     enable_search: true
   })
 
@@ -27,6 +28,7 @@ export default defineEventHandler(async event => {
     async start(controller) {
       for await (const chunk of response) {
         const content = chunk.choices[0]?.delta?.content || ''
+
         if (content) {
           controller.enqueue(new TextEncoder().encode(content))
         }

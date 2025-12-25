@@ -32,46 +32,7 @@
           v-if="messageList.length === 0"
           class="flex flex-col items-center justify-center h-[60vh] text-center space-y-8 animate-fade-in"
         >
-          <div
-            class="w-20 h-20 bg-white dark:bg-gray-800 rounded-3xl shadow-xl flex items-center justify-center mb-2 ring-1 ring-gray-100 dark:ring-gray-700"
-          >
-            <Icon icon="carbon:idea" class="w-10 h-10 text-blue-500" />
-          </div>
-          <div>
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">今天想了解什么？</h2>
-            <p class="text-gray-500 dark:text-gray-400">获取最新的热门资讯、技术趋势和政策解读</p>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
-            <button
-              @click="setInput('最新的经济政策')"
-              class="group p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-400 hover:shadow-md transition-all text-left"
-            >
-              <div class="flex items-center gap-2 mb-1">
-                <Icon icon="carbon:chart-line" class="text-blue-500" />
-                <span
-                  class="font-medium text-sm text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400"
-                >
-                  经济政策
-                </span>
-              </div>
-              <div class="text-xs text-gray-400">查看今日发布的重磅财经新闻</div>
-            </button>
-            <button
-              @click="setInput('前端开发趋势')"
-              class="group p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-400 hover:shadow-md transition-all text-left"
-            >
-              <div class="flex items-center gap-2 mb-1">
-                <Icon icon="carbon:code" class="text-purple-500" />
-                <span
-                  class="font-medium text-sm text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400"
-                >
-                  开发趋势
-                </span>
-              </div>
-              <div class="text-xs text-gray-400">了解 Vue, Nuxt 等技术栈动态</div>
-            </button>
-          </div>
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">今天想了解什么？</h2>
         </div>
 
         <!-- 消息列表 -->
@@ -111,11 +72,7 @@
               <!-- AI 消息 -->
               <div v-else>
                 <ClientOnly>
-                  <MarkdownRender
-                    :content="msg.content"
-                    :is-dark="isDark"
-                    class="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-gray-50 dark:prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-200 dark:prose-pre:border-gray-700"
-                  />
+                  <MarkdownRender :content="content" />
                 </ClientOnly>
                 <!-- 加载动画 -->
                 <div v-if="msg.isStreaming" class="flex gap-1.5 mt-3 items-center h-4">
@@ -176,9 +133,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, nextTick } from 'vue'
 import { Icon } from '@iconify/vue'
 import MarkdownRender from 'markstream-vue'
+import 'markstream-vue/index.css'
 
 // --- 类型定义 ---
 interface Message {
@@ -191,19 +149,9 @@ interface Message {
 const inputContent = ref('')
 const isGlobalStreaming = ref(false)
 const scrollContainer = ref<HTMLElement | null>(null)
-const isDark = ref(false)
 
 // 初始为空，展示欢迎页
 const messageList = ref<Message[]>([])
-
-// --- 核心逻辑 ---
-
-const setInput = (text: string) => {
-  inputContent.value = text
-  // 可选：自动聚焦输入框
-  const textarea = document.querySelector('textarea')
-  textarea?.focus()
-}
 
 const scrollToBottom = async () => {
   await nextTick()
@@ -273,12 +221,6 @@ const fetchStreamFromNuxtServer = async (msgIndex: number) => {
     isGlobalStreaming.value = false
   }
 }
-
-onMounted(() => {
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    isDark.value = true
-  }
-})
 </script>
 
 <style>
