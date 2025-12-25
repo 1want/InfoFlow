@@ -96,16 +96,29 @@ const inputContent = ref('')
 const isGlobalStreaming = ref(false)
 const scrollContainer = ref<HTMLElement | null>(null)
 const messageList = ref<Message[]>([])
+const isUserScrolling = ref(false) // 标记用户是否正在查看历史消息
 
 // --- 核心：平滑流式打字机逻辑 ---
 // pendingQueue 存储已接收但未显示的字符
 const pendingQueue = ref('')
 let typewriterTimer: number | null = null
 
-const scrollToBottom = async () => {
+// 监听滚动事件
+const handleScroll = () => {
+  if (!scrollContainer.value) return
+  const { scrollTop, scrollHeight, clientHeight } = scrollContainer.value
+  // 如果距离底部超过 50px，认为用户在看历史消息
+  const distanceToBottom = scrollHeight - scrollTop - clientHeight
+  isUserScrolling.value = distanceToBottom > 50
+}
+
+const scrollToBottom = async (force = false) => {
   await nextTick()
   if (scrollContainer.value) {
-    scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight
+    // 只有在强制模式（如刚发送时）或用户没在看历史消息时，才自动滚
+    if (force || !isUserScrolling.value) {
+      scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight
+    }
   }
 }
 
@@ -116,7 +129,7 @@ const handleSend = async () => {
   // 1. 添加用户消息
   messageList.value.push({ role: 'user', content: text })
   inputContent.value = ''
-  await scrollToBottom()
+  await scrollToBottom(true)
 
   // 2. 添加 AI 占位消息
   isGlobalStreaming.value = true
@@ -213,6 +226,16 @@ const flushTypewriter = async (msgIndex: number) => {
     await scrollToBottom()
   }
 }
+
+onMounted(() => {
+  const el = scrollContainer.value
+  if (el) el.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  const el = scrollContainer.value
+  if (el) el.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <style lang="scss">
