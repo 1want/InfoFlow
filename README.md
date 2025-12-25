@@ -10,12 +10,10 @@
 
 InfoFlow 是一个基于 **Nuxt 3** 构建的极简 AI 资讯助手 Demo。它展示了如何利用现代前端技术栈构建一个流式对话应用。
 
-**核心技术栈：**
-
 - **框架**: [Nuxt 3](https://nuxt.com) (Vue 3)
-- **样式**: [Tailwind CSS](https://tailwindcss.com)
+- **样式**: SCSS (手写样式，无 CSS 框架依赖)
 - **图标**: [Iconify](https://iconify.design)
-- **Markdown 渲染**: [markstream-vue](https://github.com/wanti-dev/markstream-vue) (流式渲染组件)
+- **Markdown 渲染**: `markdown-it` + `highlight.js` (自定义流式渲染组件)
 - **AI 接入**: OpenAI SDK (兼容阿里云百炼 / DeepSeek 等)
 
 ## ✅ 环境要求
@@ -29,7 +27,12 @@ InfoFlow 是一个基于 **Nuxt 3** 构建的极简 AI 资讯助手 Demo。它�
 
 ### 1. 配置环境变量
 
-在项目根目录.env 文件填入你的 API Key
+在项目根目录创建 `.env` 文件，并填入你的 API Key：
+
+```env
+# 示例配置
+NUXT_OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
+```
 
 ### 2. 安装依赖
 

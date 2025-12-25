@@ -1,4 +1,3 @@
-<!-- filepath: /Users/wanti/code/InfoFlow/app/pages/index.vue -->
 <template>
   <div class="chat-container">
     <!-- 1. 顶部导航 -->
@@ -209,6 +208,17 @@ const flushTypewriter = async (msgIndex: number) => {
 }
 </script>
 
+<style lang="scss">
+/* 3. 全局滚动锁定 */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* 禁止 body 滚动 */
+}
+</style>
+
 <style lang="scss" scoped>
 /* 变量定义 */
 $bg-color: #ffffff;
@@ -223,10 +233,11 @@ $primary-color: #10a37f;
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100vh; /* 占满视口 */
   background-color: $bg-color;
   color: #333;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden; /* 防止容器溢出 */
 }
 
 /* 1. Header */
@@ -296,6 +307,21 @@ $primary-color: #10a37f;
   flex: 1;
   overflow-y: auto;
   padding: 20px 0 120px;
+
+  /* 优化滚动条样式 */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
 
   .message-list {
     max-width: 800px;
