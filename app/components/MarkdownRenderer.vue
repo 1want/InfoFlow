@@ -118,12 +118,6 @@ const renderedContent = computed(() => {
     background-color: #f5f7fa;
     white-space: normal;
   }
-  tr:hover td {
-    background-color: #f5f7fa;
-  }
-  tr:last-child td {
-    border-bottom: none;
-  }
 
   /* --- 代码块样式 (暗色主题) --- */
   .code-block-wrapper {
@@ -160,34 +154,6 @@ const renderedContent = computed(() => {
     background-color: rgba(175, 184, 193, 0.2);
     border-radius: 6px;
     font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-  }
-}
-
-/* 暗色模式适配 */
-.dark .markdown-body {
-  color: #c9d1d9;
-  table {
-    background-color: #1d1e1f;
-    border-color: #363637;
-  }
-  th {
-    background-color: #2b2b2c;
-    border-bottom-color: #363637;
-    color: #a3a6ad;
-  }
-  td {
-    border-bottom-color: #363637;
-    color: #cfd3dc;
-  }
-  tr:hover td {
-    background-color: #2b2b2c;
-  }
-  code:not(pre code) {
-    background-color: rgba(110, 118, 129, 0.4);
-  }
-  blockquote {
-    border-left-color: #30363d;
-    color: #8b949e;
   }
 }
 </style>

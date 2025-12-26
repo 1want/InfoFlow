@@ -1,30 +1,23 @@
 <template>
   <div class="chat-container">
-    <!-- 1. 顶部导航 -->
-    <header class="chat-header">
-      <div class="header-content">
-        <div class="logo-area">
-          <div class="logo-icon">
-            <Icon icon="carbon:ibm-watson-discovery" />
-          </div>
-          <div class="logo-text">
-            <h1>InfoFlow</h1>
-            <p>Daily Insights</p>
-          </div>
-        </div>
-        <button class="settings-btn">
-          <Icon icon="carbon:settings" />
-        </button>
-      </div>
-    </header>
-
     <!-- 2. 消息列表 -->
-    <main class="chat-main" ref="scrollContainer">
+    <main class="chat-main">
       <div class="message-list">
         <!-- 空状态 -->
         <div v-if="messageList.length === 0" class="empty-state">
           <Icon icon="carbon:idea" class="empty-icon" />
           <h2>今天想了解什么？</h2>
+
+          <div class="quick-actions">
+            <div class="action-card" @click="quickAsk('总结最近经济政策')">
+              <Icon icon="carbon:chart-line" />
+              <span>总结最近经济政策</span>
+            </div>
+            <div class="action-card" @click="quickAsk('总结最近前端技术改动')">
+              <Icon icon="carbon:code" />
+              <span>总结最近前端改动</span>
+            </div>
+          </div>
         </div>
 
         <!-- 消息项 -->
@@ -47,14 +40,7 @@
               </div>
               <div v-else class="markdown-content">
                 <MarkdownRenderer :content="msg.content" />
-                <span v-if="msg.isStreaming" class="cursor">|</span>
               </div>
-            </div>
-
-            <!-- 底部工具栏 -->
-            <div v-if="msg.role === 'assistant' && !msg.isStreaming" class="message-actions">
-              <button title="复制"><Icon icon="carbon:copy" /></button>
-              <button title="重试"><Icon icon="carbon:renew" /></button>
             </div>
           </div>
         </div>
@@ -82,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import MarkdownRenderer from '~/components/MarkdownRenderer.vue'
 
@@ -94,32 +80,16 @@ interface Message {
 
 const inputContent = ref('')
 const isGlobalStreaming = ref(false)
-const scrollContainer = ref<HTMLElement | null>(null)
 const messageList = ref<Message[]>([])
-const isUserScrolling = ref(false) // 标记用户是否正在查看历史消息
 
 // --- 核心：平滑流式打字机逻辑 ---
 // pendingQueue 存储已接收但未显示的字符
 const pendingQueue = ref('')
 let typewriterTimer: number | null = null
 
-// 监听滚动事件
-const handleScroll = () => {
-  if (!scrollContainer.value) return
-  const { scrollTop, scrollHeight, clientHeight } = scrollContainer.value
-  // 如果距离底部超过 50px，认为用户在看历史消息
-  const distanceToBottom = scrollHeight - scrollTop - clientHeight
-  isUserScrolling.value = distanceToBottom > 50
-}
-
-const scrollToBottom = async (force = false) => {
-  await nextTick()
-  if (scrollContainer.value) {
-    // 只有在强制模式（如刚发送时）或用户没在看历史消息时，才自动滚
-    if (force || !isUserScrolling.value) {
-      scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight
-    }
-  }
+const quickAsk = (text: string) => {
+  inputContent.value = text
+  handleSend()
 }
 
 const handleSend = async () => {
@@ -129,7 +99,6 @@ const handleSend = async () => {
   // 1. 添加用户消息
   messageList.value.push({ role: 'user', content: text })
   inputContent.value = ''
-  await scrollToBottom(true)
 
   // 2. 添加 AI 占位消息
   isGlobalStreaming.value = true
@@ -191,21 +160,20 @@ const fetchStreamFromNuxtServer = async (msgIndex: number) => {
 const startTypewriter = (msgIndex: number) => {
   const type = () => {
     // 如果队列有内容，进行消费
-    if (pendingQueue.value.length > 0) {
-      // 动态计算本帧渲染字符数：
-      // 1. 基础速度：至少 5 个字符，保证小段文字也能快速出完
-      // 2. 加速因子：每次渲染剩余量的 1/4 (25%)，实现极速追赶
-      //    例如：积压 1000 字 -> 第一帧渲染 250 字 -> 剩 750
-      //         下一帧渲染 187 字 -> ...
-      //    这种算法能带来“一块一块”快速涌现的视觉感，且非常流畅
-      const queueLen = pendingQueue.value.length
-      const charsToRender = Math.max(5, Math.floor(queueLen / 4))
+    const queueLen = pendingQueue.value.length
+    if (queueLen > 0) {
+      // 更加平滑的流式打字机逻辑
+      // 1. 基础速度：每帧 1-2 个字符，保证逐字出现的丝滑感
+      // 2. 动态加速：当积压过多时，线性增加每帧渲染数量，避免延迟过高
+      //    算法：每积压 30 个字符，每帧多渲染 1 个字符
+      //    例如：积压 300 字 -> 每帧渲染 1 + 10 = 11 字，依然非常平滑
+      const baseSpeed = 1
+      const speedFactor = Math.floor(queueLen / 30)
+      const charsToRender = Math.max(1, baseSpeed + speedFactor)
 
       const chunk = pendingQueue.value.slice(0, charsToRender)
       messageList.value[msgIndex].content += chunk
       pendingQueue.value = pendingQueue.value.slice(charsToRender)
-
-      scrollToBottom()
     }
 
     // 只要还在流式传输，或者队列里还有东西，就继续循环
@@ -223,19 +191,8 @@ const flushTypewriter = async (msgIndex: number) => {
   if (pendingQueue.value) {
     messageList.value[msgIndex].content += pendingQueue.value
     pendingQueue.value = ''
-    await scrollToBottom()
   }
 }
-
-onMounted(() => {
-  const el = scrollContainer.value
-  if (el) el.addEventListener('scroll', handleScroll)
-})
-
-onUnmounted(() => {
-  const el = scrollContainer.value
-  if (el) el.removeEventListener('scroll', handleScroll)
-})
 </script>
 
 <style lang="scss">
@@ -268,68 +225,6 @@ $primary-color: #10a37f;
   color: #333;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   overflow: hidden; /* 防止容器溢出 */
-}
-
-/* 1. Header */
-.chat-header {
-  flex: none;
-  padding: 1rem;
-  border-bottom: 1px solid $border-color;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  z-index: 10;
-
-  .header-content {
-    max-width: 800px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, #10a37f 0%, #0d8a6a 100%);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 20px;
-    }
-
-    .logo-text {
-      h1 {
-        font-size: 16px;
-        font-weight: bold;
-        margin: 0;
-      }
-      p {
-        font-size: 10px;
-        color: #666;
-        margin: 0;
-        text-transform: uppercase;
-      }
-    }
-  }
-
-  .settings-btn {
-    padding: 8px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: #666;
-    &:hover {
-      background-color: #f0f0f0;
-    }
-  }
 }
 
 /* 2. Main */
@@ -375,6 +270,39 @@ $primary-color: #10a37f;
     font-size: 48px;
     color: $primary-color;
     margin-bottom: 16px;
+  }
+}
+
+.quick-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.action-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #fff;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: $primary-color;
+    background-color: rgba($primary-color, 0.05);
+    transform: translateY(-1px);
+  }
+
+  svg {
+    color: $primary-color;
+    font-size: 16px;
   }
 }
 
@@ -442,16 +370,6 @@ $primary-color: #10a37f;
   }
 }
 
-.cursor {
-  display: inline-block;
-  width: 6px;
-  height: 18px;
-  background-color: $primary-color;
-  margin-left: 4px;
-  vertical-align: middle;
-  animation: blink 1s infinite;
-}
-
 @keyframes blink {
   0%,
   100% {
@@ -460,29 +378,6 @@ $primary-color: #10a37f;
   50% {
     opacity: 0;
   }
-}
-
-.message-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 6px;
-  opacity: 0;
-  transition: opacity 0.2s;
-
-  button {
-    background: none;
-    border: none;
-    color: #999;
-    cursor: pointer;
-    font-size: 14px;
-    &:hover {
-      color: #666;
-    }
-  }
-}
-
-.message-item:hover .message-actions {
-  opacity: 1;
 }
 
 /* 3. Footer */
@@ -524,14 +419,14 @@ $primary-color: #10a37f;
       outline: none;
       font-size: 15px;
       max-height: 200px;
-      min-height: 52px;
+      min-height: 62px;
       box-sizing: border-box;
     }
 
     .send-btn {
       position: absolute;
       right: 8px;
-      bottom: 8px;
+      bottom: 18px;
       width: 32px;
       height: 32px;
       border-radius: 6px;
@@ -553,40 +448,6 @@ $primary-color: #10a37f;
         cursor: not-allowed;
       }
     }
-  }
-}
-
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .chat-container {
-    background-color: $bg-color-dark;
-    color: #eee;
-  }
-  .chat-header {
-    background-color: rgba(17, 17, 17, 0.8);
-    border-bottom-color: $border-color-dark;
-  }
-  .chat-header .logo-text h1 {
-    color: #eee;
-  }
-
-  .message-item.assistant .message-bubble {
-    background-color: $msg-bg-ai-dark;
-  }
-  .message-item.assistant .avatar {
-    background-color: $bg-color-dark;
-    border-color: $border-color-dark;
-  }
-
-  .chat-footer {
-    background: linear-gradient(to top, $bg-color-dark 80%, transparent);
-  }
-  .chat-footer .input-wrapper {
-    background-color: #2d2d2d;
-    border-color: #444;
-  }
-  .chat-footer .input-wrapper textarea {
-    color: #eee;
   }
 }
 </style>
