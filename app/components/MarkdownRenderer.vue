@@ -13,7 +13,7 @@ const props = defineProps<{
 }>()
 
 const md = new MarkdownIt({
-  html: false,
+  html: true,
   linkify: true,
   typographer: true,
   highlight: (str, lang) => {

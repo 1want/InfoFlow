@@ -1,4 +1,4 @@
-# InfoFlow - AI 资讯助手 (Demo)
+# SpecGist - AI 手机参数对比专家
 
 > ⚠️ **免责声明 / Disclaimer**
 >
@@ -8,7 +8,7 @@
 
 ## 📖 项目简介
 
-InfoFlow 是一个基于 **Nuxt 3** 构建的手机对比网站
+**SpecGist** 是一个基于 AI 驱动的智能手机参数对比工具。摒弃繁琐的手动查询，只需输入手机型号，即可自动联网检索最新硬件数据，生成深度对比表格。
 
 - **框架**: [Nuxt 3](https://nuxt.com) (Vue 3)
 - **图标**: [Iconify](https://iconify.design)

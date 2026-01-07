@@ -1446,16 +1446,16 @@ const plugins = [
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"15f69-4Tl0mJlMv3WQiYmheQtkO4PRfPA\"",
-    "mtime": "2026-01-07T09:01:51.859Z",
-    "size": 89961,
+    "etag": "\"15f9f-cxNcca6LuwwvNnCXZSpXad49SCw\"",
+    "mtime": "2026-01-07T09:03:20.356Z",
+    "size": 90015,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"56b88-K1Xf0Etr2ZxTF1zBAIsiwxNunz8\"",
-    "mtime": "2026-01-07T09:01:51.859Z",
-    "size": 355208,
+    "etag": "\"56c96-e3g9kxLsX41GZHALU2IfWCbSpwc\"",
+    "mtime": "2026-01-07T09:03:20.356Z",
+    "size": 355478,
     "path": "index.mjs.map"
   }
 };
@@ -2240,7 +2240,7 @@ const chat_post = defineEventHandler(async (event) => {
       - **\u7EED\u822A\u5145\u7535**\uFF1A\u7535\u6C60\u5BB9\u91CF\u3001\u6709\u7EBF\u529F\u7387\u3001\u65E0\u7EBF\u529F\u7387\u3001\u53CD\u5411\u5145\u7535\u3002
       - **\u5916\u56F4\u4F53\u9A8C**\uFF1A\u6307\u7EB9\u8BC6\u522B\u7C7B\u578B\uFF08\u77ED\u7126/\u8D85\u8584/\u8D85\u58F0\u6CE2\uFF09\u3001\u9A6C\u8FBE\u7C7B\u578B\u3001\u626C\u58F0\u5668\u914D\u7F6E\u3001\u9632\u6C34\u9632\u5C18\u7B49\u7EA7\u3001\u7EA2\u5916/NFC\u3002
       - **\u673A\u8EAB\u5916\u89C2**\uFF1A\u4E09\u56F4\u5C3A\u5BF8\u3001\u91CD\u91CF\u3001\u4E2D\u6846\u6750\u8D28\u3001\u540E\u76D6\u6750\u8D28\u3001\u914D\u8272\u3002
-      - **\u7279\u8272/\u9ED1\u79D1\u6280**\uFF1A(\u6B64\u5904\u5217\u51FA\u8BE5\u624B\u673A\u6700\u72EC\u7279\u7684\u5DEE\u5F02\u5316\u529F\u80FD)\u3002
+      - **\u7279\u8272**\uFF1A(\u6B64\u5904\u5217\u51FA\u8BE5\u624B\u673A\u6700\u72EC\u7279\u7684\u5DEE\u5F02\u5316\u529F\u80FD)\u3002
 
       \u5982\u679C\u7528\u6237\u53EA\u8F93\u5165\u4E00\u4E2A\u578B\u53F7\uFF0C\u4EC5\u8F93\u51FA\u8BE5\u624B\u673A\u53C2\u6570\u8868\u683C\uFF0C\u540C\u6837\u4E25\u7981\u4EFB\u4F55\u5E9F\u8BDD\u3002
     `
