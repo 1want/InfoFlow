@@ -1443,7 +1443,22 @@ const plugins = [
   __BzHTas3k4j4wnh6gV4r2BzgDni6Wa6Z0uXTVqqk0
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"156aa-Qj+Jj5sGtr5N4C+SvoXOtCaDCg4\"",
+    "mtime": "2026-01-07T08:43:59.986Z",
+    "size": 87722,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"5400e-ykfFBg4gYAOmgxCYf9X36wNzZek\"",
+    "mtime": "2026-01-07T08:43:59.986Z",
+    "size": 344078,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2201,10 +2216,24 @@ const chat_post = defineEventHandler(async (event) => {
     baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
     // 阿里云兼容接口地址
   });
+  const systemPrompt = {
+    role: "system",
+    content: `
+      \u4F60\u662F\u4E00\u4E2A\u4E13\u4E1A\u7684\u6570\u7801\u4EA7\u54C1\u5BF9\u6BD4\u4E13\u5BB6\uFF0C\u4E13\u6CE8\u4E8E\u624B\u673A\u53C2\u6570\u5BF9\u6BD4\u3002
+      
+      \u4F60\u7684\u4EFB\u52A1\u89C4\u5219\u5982\u4E0B\uFF1A
+      1. \u5F53\u7528\u6237\u8F93\u5165\u624B\u673A\u578B\u53F7\u65F6\uFF0C\u8BF7\u8C03\u7528\u8054\u7F51\u641C\u7D22\u529F\u80FD\u83B7\u53D6\u8FD9\u4E9B\u624B\u673A\u7684\u6700\u65B0\u3001\u6700\u51C6\u786E\u7684\u786C\u4EF6\u53C2\u6570\u3002
+      2. \u5FC5\u987B\u4EE5 Markdown \u8868\u683C\u7684\u5F62\u5F0F\u8F93\u51FA\u5BF9\u6BD4\u7ED3\u679C\u3002
+      3. \u8868\u683C\u8981\u6C42\uFF1A
+         - \u8868\u5934\uFF08\u5217\u540D\uFF09\u4E3A\u624B\u673A\u7684\u5177\u4F53\u578B\u53F7\u3002
+         - \u7B2C\u4E00\u5217\u4E3A\u53C2\u6570\u7EF4\u5EA6\uFF08\u5982\uFF1A\u4EF7\u683C\u3001\u5904\u7406\u5668/SoC\u3001\u5C4F\u5E55\u5C3A\u5BF8\u4E0E\u6750\u8D28\u3001\u5237\u65B0\u7387\u3001\u540E\u7F6E\u6444\u50CF\u5934\u53C2\u6570\u3001\u524D\u7F6E\u6444\u50CF\u5934\u3001\u7535\u6C60\u5BB9\u91CF\u3001\u5145\u7535\u529F\u7387\u3001\u673A\u8EAB\u91CD\u91CF/\u539A\u5EA6\u3001\u64CD\u4F5C\u7CFB\u7EDF\u7B49\uFF09\u3002
+      4. \u5BF9\u6BD4\u5B8C\u6210\u540E\uFF0C\u7B80\u8981\u603B\u7ED3\u5404\u6B3E\u624B\u673A\u7684\u4F18\u7F3A\u70B9\u548C\u9002\u7528\u4EBA\u7FA4\u3002
+      5. \u5982\u679C\u7528\u6237\u53EA\u8F93\u5165\u4E86\u4E00\u4E2A\u578B\u53F7\uFF0C\u8BF7\u5217\u51FA\u8BE5\u624B\u673A\u8BE6\u7EC6\u53C2\u6570\uFF0C\u5E76\u8BE2\u95EE\u9700\u8981\u5BF9\u6BD4\u7684\u7ADE\u54C1\u3002
+    `
+  };
   const response = await client.chat.completions.create({
     model: "qwen-plus-2025-12-01",
-    // 推荐: qwen-plus, qwen-turbo, qwen-max
-    messages,
+    messages: [systemPrompt, ...messages],
     stream: true,
     // 开启流式输出
     // @ts-ignore 阿里云特定参数：开启联网搜索以获取最新信息

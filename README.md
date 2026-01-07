@@ -8,10 +8,9 @@
 
 ## 📖 项目简介
 
-InfoFlow 是一个基于 **Nuxt 3** 构建的极简 AI 资讯助手 Demo。它展示了如何利用现代前端技术栈构建一个流式对话应用。
+InfoFlow 是一个基于 **Nuxt 3** 构建的手机对比网站
 
 - **框架**: [Nuxt 3](https://nuxt.com) (Vue 3)
-- **样式**: SCSS (手写样式，无 CSS 框架依赖)
 - **图标**: [Iconify](https://iconify.design)
 - **Markdown 渲染**: `markdown-it` + `highlight.js` (自定义流式渲染组件)
 - **AI 接入**: OpenAI SDK (兼容阿里云百炼 / DeepSeek 等)

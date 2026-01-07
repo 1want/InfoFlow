@@ -5,19 +5,9 @@
       <div class="message-list">
         <!-- 空状态 -->
         <div v-if="messageList.length === 0" class="empty-state">
-          <Icon icon="carbon:idea" class="empty-icon" />
-          <h2>今天想了解什么？</h2>
-
-          <div class="quick-actions">
-            <div class="action-card" @click="quickAsk('总结最近经济政策')">
-              <Icon icon="carbon:chart-line" />
-              <span>总结最近经济政策</span>
-            </div>
-            <div class="action-card" @click="quickAsk('总结最近前端技术改动')">
-              <Icon icon="carbon:code" />
-              <span>总结最近前端改动</span>
-            </div>
-          </div>
+          <Icon icon="carbon:devices" class="empty-icon" />
+          <h2>想对比哪款手机？</h2>
+          <p class="sub-text">我可以帮你获取最新手机参数并生成对比表格</p>
         </div>
 
         <!-- 消息项 -->
@@ -54,7 +44,7 @@
           <textarea
             v-model="inputContent"
             @keydown.enter.prevent="handleSend"
-            placeholder="输入问题..."
+            placeholder="输入手机型号..."
             rows="1"
           ></textarea>
           <button @click="handleSend" :disabled="!inputContent.trim() || isGlobalStreaming" class="send-btn">
@@ -86,11 +76,6 @@ const messageList = ref<Message[]>([])
 // pendingQueue 存储已接收但未显示的字符
 const pendingQueue = ref('')
 let typewriterTimer: number | null = null
-
-const quickAsk = (text: string) => {
-  inputContent.value = text
-  handleSend()
-}
 
 const handleSend = async () => {
   const text = inputContent.value.trim()
@@ -209,12 +194,9 @@ body {
 <style lang="scss" scoped>
 /* 变量定义 */
 $bg-color: #ffffff;
-$bg-color-dark: #111111;
 $msg-bg-user: #d2f9d1;
 $msg-bg-ai: #f7f7f8;
-$msg-bg-ai-dark: #444654;
 $border-color: #d1d5db; /* 加深边框颜色，原为 #e5e7eb */
-$border-color-dark: #333333;
 $primary-color: #10a37f;
 
 .chat-container {
@@ -270,39 +252,6 @@ $primary-color: #10a37f;
     font-size: 48px;
     color: $primary-color;
     margin-bottom: 16px;
-  }
-}
-
-.quick-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.action-card {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background-color: #fff;
-  border: 1px solid $border-color;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #333;
-  transition: all 0.2s;
-
-  &:hover {
-    border-color: $primary-color;
-    background-color: rgba($primary-color, 0.05);
-    transform: translateY(-1px);
-  }
-
-  svg {
-    color: $primary-color;
-    font-size: 16px;
   }
 }
 
@@ -367,16 +316,6 @@ $primary-color: #10a37f;
 
   .text-content {
     white-space: pre-wrap;
-  }
-}
-
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
   }
 }
 
